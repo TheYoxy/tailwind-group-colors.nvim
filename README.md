@@ -21,19 +21,53 @@ className={cn('px-1 py-2 mbs-1 col-start-2 grid gap-x-6 disabled:mt-2 text-sm', 
 
 ## Installation
 
-lazy.nvim:
+### lazy.nvim
+
+The repo ships a [`lazy.lua`](lazy.lua) package spec, so lazy.nvim is configured by the plugin itself. Reference the repo, nothing else:
+
+```lua
+{ "theyoxy/tailwind-group-colors.nvim" }
+```
+
+lazy.nvim reads `lazy.lua` from the checked-out plugin and merges these fields into the spec:
+
+| Field | Value | Why |
+| --- | --- | --- |
+| `main` | `"tailwind-group-colors"` | Module lazy.nvim calls `setup()` on. Auto-detected from the repo name; pinned so `opts` keeps working if that heuristic changes. |
+| `lazy` | `false` | Start plugin. The query files have to be on the runtimepath before Tree-sitter highlights the first buffer. |
+| `opts` | `{}` | Enables the automatic `setup(opts)` call. |
+
+The same spec written by hand:
 
 ```lua
 {
   "theyoxy/tailwind-group-colors.nvim",
+  main = "tailwind-group-colors",
   lazy = false,
   opts = {},
 }
 ```
 
-Load it at startup (`lazy = false`). The query files have to be on the runtimepath before Tree-sitter highlights the first buffer, and a plugin lazy-loaded on `ft` can load too late. If you do lazy-load it, use `event = "VeryLazy"` and not `ft`.
+Configure through `opts`. It is merged into the defaults, so pass only what changes:
 
-Manual (packer, mini.deps, built-in `:packadd`): add the directory to `runtimepath` as usual. The plugin configures itself on load, so `setup()` is optional.
+```lua
+{
+  "theyoxy/tailwind-group-colors.nvim",
+  opts = { priority = 150, attributes = { className = true } },
+}
+```
+
+Do not lazy-load on `ft`. A plugin loaded on `ft = "typescriptreact"` loads after Tree-sitter has already highlighted the buffer, so the classes stay unstyled until the next redraw. If you must defer, use `event = "VeryLazy"`, never `ft`. Startup loading (`lazy = false`, the default) avoids the problem entirely.
+
+Contributing to the plugin itself, use the `dev` option to test against a local checkout:
+
+```lua
+{ "theyoxy/tailwind-group-colors.nvim", dev = true }
+```
+
+### Manual
+
+packer, mini.deps, built-in `:packadd`: add the directory to `runtimepath` as usual. The plugin configures itself on load, so `setup()` is optional.
 
 ## Configuration
 
