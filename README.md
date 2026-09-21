@@ -1,5 +1,8 @@
 # tailwind-group-colors.nvim
 
+> [!NOTE]
+> 🤖 This repository was mostly written by an AI, guided by Floryan.
+
 Colour Tailwind CSS classes by utility family inside Neovim.
 
 `margin` utilities get one colour, `padding` another, `display` another, and so on. The point is readability: a long `cn('...')` string becomes scannable instead of a wall of one colour.
