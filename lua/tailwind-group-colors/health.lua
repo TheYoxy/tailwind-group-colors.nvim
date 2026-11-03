@@ -27,6 +27,29 @@ function M.check()
     return
   end
 
+  -- Neovim keeps only one non-extending highlights file per language and drops
+  -- the rest, so a missing `; extends` leaves the plugin silently inert.
+  for _, lang in ipairs({ "tsx", "typescript", "javascript" }) do
+    local ok, query = pcall(vim.treesitter.query.get, lang, "highlights")
+    local found = false
+    if ok and query then
+      for _, capture in ipairs(query.captures) do
+        if capture == "tailwind.classes" then
+          found = true
+          break
+        end
+      end
+    end
+    if found then
+      health.ok(("queries/%s/highlights.scm is loaded"):format(lang))
+    else
+      health.error(
+        ("queries/%s/highlights.scm is not part of the merged query"):format(lang),
+        { "Another query file for this language won the merge; ours must start with '; extends'" }
+      )
+    end
+  end
+
   local conf = mod.config()
   health.info(("kinds: %d"):format(#conf.kinds))
   health.info(("class functions: %s"):format(table.concat(vim.tbl_keys(conf.functions), ", ")))

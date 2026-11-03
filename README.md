@@ -152,9 +152,11 @@ A kind is either `exact` (class names matched literally) or `prefix` (matched by
 
 ## How it works
 
-1. `queries/<lang>/highlights.scm` captures the string fragment that holds a class list and its owner (attribute or function name), then attaches the `#tailwind-group-colors!` directive.
+1. `queries/<lang>/highlights.scm` captures the string fragment that holds a class list and its owner (attribute or function name), then attaches the `#tailwind-group-colors!` directive. Every file starts with `; extends`, which is what makes Neovim append it to the language's base query instead of discarding it (see below).
 2. The Lua directive runs inside the Tree-sitter highlighter. It checks the owner against `attributes` / `functions`, splits the string on whitespace, strips variant prefixes, classifies each utility, and paints it with an `ephemeral` extmark.
 3. Ephemeral extmarks are recreated on every redraw, so there is no stale state to invalidate.
+
+Neovim's `vim.treesitter.query.get_files()` keeps a single base file per language/query and silently drops every other file that is not marked `; extends`. nvim-treesitter owns `queries/tsx/highlights.scm`, so without that modeline the plugin's file is dropped and nothing is coloured. `:checkhealth tailwind-group-colors` reports this.
 
 There is no new grammar and no separate parser. The stock parsers do the work.
 
@@ -162,7 +164,7 @@ There is no new grammar and no separate parser. The stock parsers do the work.
 
 - Colour utilities are intentionally skipped. `text-red-500`, `bg-red-500`, `fill-*`, `stroke-*`, `from-*`, `via-*`, `to-*` stay uncoloured. One side effect: `border-red-500` still matches the `border` family because the matcher is prefix based.
 - Only literal strings are seen. `cn('px-1', condition && 'py-2')` colours `px-1` but not `py-2`, since the second value is not a direct string argument.
-- Only `tsx`, `typescript`, and `javascript` query files ship. Add another language by copying a query file under `queries/<lang>/highlights.scm`.
+- Only `tsx`, `typescript`, and `javascript` query files ship. Add another language by copying a query file under `queries/<lang>/highlights.scm`; it must start with `; extends`.
 
 ## Health
 

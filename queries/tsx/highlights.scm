@@ -1,3 +1,9 @@
+; extends
+;
+; The `; extends` modeline is required: Neovim's query loader keeps only the
+; first non-extending file per language and silently drops the rest. Without it
+; this file loses to nvim-treesitter's own queries/tsx/highlights.scm.
+;
 ; tailwind-group-colors: colour Tailwind classes by utility family.
 ;
 ; This file only declares *where* class lists live. Each captured string is

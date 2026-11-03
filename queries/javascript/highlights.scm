@@ -1,3 +1,5 @@
+; extends
+;
 ; tailwind-group-colors: JavaScript / JSX. See queries/tsx/highlights.scm.
 
 ; className="px-1 py-2"
