@@ -7,9 +7,9 @@
 --- Tree-sitter highlighter for every visible match, so it can paint each utility
 --- with an `ephemeral` extmark and keep no state of its own.
 ---
---- No new grammar is involved: the stock `tsx` / `typescript` / `javascript`
---- parsers produce the `call_expression` / `jsx_attribute` / `string_fragment`
---- nodes used here.
+--- No new grammar is involved: the stock `tsx` / `typescript` / `javascript` /
+--- `html` / `astro` parsers produce the `call_expression` / `jsx_attribute` /
+--- `attribute` / `string_fragment` / `attribute_value` nodes used here.
 ---
 --- Usage:
 ---   require("tailwind-group-colors").setup({ ... })

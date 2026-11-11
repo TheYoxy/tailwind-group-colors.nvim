@@ -2,6 +2,8 @@
 
 local M = {}
 
+local langs = { "tsx", "typescript", "javascript", "html", "astro" }
+
 function M.check()
   local health = vim.health
   health.start("tailwind-group-colors")
@@ -12,9 +14,11 @@ function M.check()
     health.error("Neovim >= 0.10 is required for vim.treesitter.query.add_directive()")
   end
 
-  for _, lang in ipairs({ "tsx", "typescript", "javascript" }) do
+  local available = {}
+  for _, lang in ipairs(langs) do
     local ok = pcall(vim.treesitter.language.add, lang)
     if ok then
+      available[#available + 1] = lang
       health.ok(("parser '%s' available"):format(lang))
     else
       health.warn(("parser '%s' missing"):format(lang), { "Install it with :TSInstall " .. lang })
@@ -28,8 +32,9 @@ function M.check()
   end
 
   -- Neovim keeps only one non-extending highlights file per language and drops
-  -- the rest, so a missing `; extends` leaves the plugin silently inert.
-  for _, lang in ipairs({ "tsx", "typescript", "javascript" }) do
+  -- the rest, so a missing `; extends` leaves the plugin silently inert. Only
+  -- check languages whose parser is installed; the query cannot load without it.
+  for _, lang in ipairs(available) do
     local ok, query = pcall(vim.treesitter.query.get, lang, "highlights")
     local found = false
     if ok and query then

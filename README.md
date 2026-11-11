@@ -17,7 +17,7 @@ className={cn('px-1 py-2 mbs-1 col-start-2 grid gap-x-6 disabled:mt-2 text-sm', 
 ## Requirements
 
 - Neovim 0.10 or newer (uses `vim.treesitter.query.add_directive`).
-- A Tree-sitter parser for `tsx`, `typescript`, or `javascript`. The `tsx` parser covers `.tsx`; install with `:TSInstall tsx typescript javascript`.
+- A Tree-sitter parser for `tsx`, `typescript`, or `javascript`, and optionally `html` and `astro`. The `tsx` parser covers `.tsx`; install with `:TSInstall tsx typescript javascript`, plus `:TSInstall html astro` if you edit HTML or Astro files.
 
 ## Installation
 
@@ -78,7 +78,7 @@ require("tailwind-group-colors").setup({
   enabled = true,
   priority = 128,
 
-  -- JSX attributes whose string value is a class list.
+  -- Attributes whose string value is a class list (JSX, HTML, Astro).
   attributes = { class = true, className = true, classList = true },
 
   -- Functions whose string arguments are class lists.
@@ -98,7 +98,7 @@ require("tailwind-group-colors").setup({
 | --- | --- | --- |
 | `enabled` | `true` | Master switch. |
 | `priority` | `128` | Extmark priority. Must beat the surrounding string highlight, which uses `100`. |
-| `attributes` | see above | JSX attributes that carry class lists. |
+| `attributes` | see above | Attributes that carry class lists. |
 | `functions` | see above | Functions whose string arguments carry class lists. |
 | `kinds` | 60 families | The utility families and their matchers. See below. |
 | `palette` | 12 groups | Highlight groups cycled across kinds for default colours. |
@@ -164,7 +164,7 @@ There is no new grammar and no separate parser. The stock parsers do the work.
 
 - Colour utilities are intentionally skipped. `text-red-500`, `bg-red-500`, `fill-*`, `stroke-*`, `from-*`, `via-*`, `to-*` stay uncoloured. One side effect: `border-red-500` still matches the `border` family because the matcher is prefix based.
 - Only literal strings are seen. `cn('px-1', condition && 'py-2')` colours `px-1` but not `py-2`, since the second value is not a direct string argument.
-- Only `tsx`, `typescript`, and `javascript` query files ship. Add another language by copying a query file under `queries/<lang>/highlights.scm`; it must start with `; extends`.
+- Only `tsx`, `typescript`, `javascript`, `html`, and `astro` query files ship. Add another language by copying a query file under `queries/<lang>/highlights.scm`; it must start with `; extends`.
 
 ## Health
 
